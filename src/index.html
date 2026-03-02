@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AfterImage Memory Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game">
+    <h1>AfterImage</h1>
+    <p class="hint">数字や文字を覚えて、消えたら4択から選んでください。</p>
+
+    <div id="display" class="display">START</div>
+
+    <div id="choices" class="choices" aria-live="polite"></div>
+
+    <div class="controls">
+      <label>
+        出題タイプ
+        <select id="mode">
+          <option value="imagesPlus">絵+</option>
+          <option value="images">絵</option>
+          <option value="letters">文字</option>
+          <option value="digits">字</option>
+        </select>
+      </label>
+
+      <label>
+        表示時間
+        <select id="duration">
+          <option value="800">0.8秒</option>
+          <option value="1000" selected>1.0秒</option>
+          <option value="1200">1.2秒</option>
+        </select>
+      </label>
+
+      <button id="startBtn">スタート</button>
+    </div>
+
+    <p id="status" class="status">スコア: 0 | ハイスコア: 0 | Start回数: 0 | 文字数: 3 | 正解数: 0</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.AFTERIMAGE_SUPABASE_URL = "https://hqmmvxzqggkxsraehdri.supabase.co";
+    window.AFTERIMAGE_SUPABASE_ANON_KEY = "sb_publishable_UntYoczPeY-53Rp9mwDOBA_TtdXeBIv";
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

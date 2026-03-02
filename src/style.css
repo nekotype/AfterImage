@@ -1,0 +1,129 @@
+﻿:root {
+  --bg1: #f6f9ff;
+  --bg2: #dfe8ff;
+  --text: #13203a;
+  --card: #ffffffcc;
+  --accent: #1f6feb;
+  --ok: #0f9d58;
+  --ng: #d93025;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "BIZ UDPGothic", "Yu Gothic UI", sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 20%, #ffffff 0, transparent 35%),
+              linear-gradient(160deg, var(--bg1), var(--bg2));
+  display: grid;
+  place-items: center;
+}
+
+.game {
+  width: min(96vw, 760px);
+  background: var(--card);
+  border: 1px solid #c9d8ff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 18px 45px #6b7ca133;
+  backdrop-filter: blur(4px);
+}
+
+h1 {
+  margin: 0 0 8px;
+  letter-spacing: 0.06em;
+}
+
+.hint {
+  margin: 0 0 18px;
+}
+
+.display {
+  min-height: 110px;
+  border-radius: 16px;
+  border: 2px dashed #9fb8ff;
+  display: grid;
+  place-items: center;
+  font-size: clamp(1.5rem, 4.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: #f9fbff;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.choices {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.choice {
+  border: 1px solid #aac1ff;
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 14px 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform .1s ease, border-color .1s ease;
+}
+
+.choice:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+}
+
+.choice.correct {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.choice.wrong {
+  border-color: var(--ng);
+  color: var(--ng);
+}
+
+.controls {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+select,
+button {
+  font: inherit;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #a8beff;
+  background: #fff;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+.status {
+  margin: 16px 0 0;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.choices.images-mode .choice {
+  font-size: 1.8rem;
+  line-height: 1.25;
+}
+
