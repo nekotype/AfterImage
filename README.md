@@ -1,86 +1,40 @@
 # AfterImage
 
-AfterImage は、表示された数字・文字・絵を短時間で記憶して4択で答えるメモリゲームです。
+AfterImage は、短時間表示された数字・文字・絵を記憶して4択で答えるメモリゲームです。
 
-## 1. 必要なもの
+## 技術スタック
 
-- Git
-- Node.js 18 以上
-- npm（Node.js に同梱）
+- HTML
+- CSS
+- JavaScript
+- Node.js（ビルドスクリプト実行用）
+- Supabase（スコア保存）
 
-バージョン確認:
+## フォルダ構成
 
-```bash
-git --version
-node -v
-npm -v
-```
+- `src/`: 開発用ソース
+  - `index.html`
+  - `style.css`
+  - `script.js`
+  - `favicon.svg`
+- `docs/`: 公開用ファイル（GitHub Pages 配信用）
+- `scripts/build-docs.js`: `src/` を `docs/` へコピーするビルドスクリプト
 
-## 2. プロジェクトを取得する
-
-```bash
-git clone <このリポジトリのURL>
-cd AfterImage
-```
-
-## 3. 初回セットアップ
+## ビルド方法
 
 ```bash
 npm install
-```
-
-このプロジェクトは依存が少ないですが、最初に実行しておくと安全です。
-
-## 4. ローカルで動かす（確認用）
-
-`src/` をそのままブラウザで確認できます。
-
-### 方法A: VS Code の Live Server を使う
-
-1. `src/index.html` を開く
-2. `Open with Live Server` を実行する
-
-### 方法B: Python の簡易サーバーを使う
-
-```bash
-cd src
-python3 -m http.server 8080
-```
-
-ブラウザで `http://localhost:8080` を開いてください。
-
-## 5. 変更する場所
-
-- 開発用ファイル: `src/`
-- 主に触るファイル:
-  - `src/index.html`
-  - `src/style.css`
-  - `src/script.js`
-
-## 6. 公開用ファイルを作る
-
-```bash
 npm run build
 ```
 
-このコマンドは `src/` の内容を `docs/` にコピーします。
-`docs/` は GitHub Pages などで公開用ディレクトリとして使えます。
+`npm run build` を実行すると、`src/` の内容が `docs/` に反映されます。
 
-## 7. 変更を保存する（Git）
+## GitHub Pages 設定
 
-```bash
-git add .
-git commit -m "Update game"
-```
+1. GitHub リポジトリの `Settings` を開く
+2. `Pages` を開く
+3. `Build and deployment` の `Source` を `Deploy from a branch` に設定
+4. `Branch` を `main`、フォルダを `/docs` に設定
+5. `Save` を押す
 
-必要に応じて push:
-
-```bash
-git push origin main
-```
-
-## ディレクトリ構成
-
-- `src/`: 開発用ソース
-- `docs/`: 公開用成果物
-- `scripts/build-docs.js`: `src/` から `docs/` へコピーするスクリプト
+公開URLは Pages 画面に表示されます。
