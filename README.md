@@ -65,4 +65,4 @@ npm run build
 
 ## ライセンス
 
-ライセンス未設定です。公開前に必要なら `LICENSE` ファイルを追加してください。
+MIT License. 詳細は `LICENSE` を参照してください。
