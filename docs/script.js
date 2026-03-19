@@ -27,16 +27,10 @@
 };
 
 const imageSeparator = "\u2009";
-// ローカル保存キー（Supabase未接続時のフォールバックにも使う）
-const localHighScoreKey = "afterimage_high_score_local";
-const localStartCountKey = "afterimage_start_count_local";
-// index.html で埋めた Supabase 設定値を読む
-const supabaseUrl = window.AFTERIMAGE_SUPABASE_URL || "";
-const supabaseAnonKey = window.AFTERIMAGE_SUPABASE_ANON_KEY || "";
-const supabaseClient =
-  window.supabase && supabaseUrl && supabaseAnonKey
-    ? window.supabase.createClient(supabaseUrl, supabaseAnonKey)
-    : null;
+const cookieMaxAge = 60 * 60 * 24 * 365;
+const highScoreCookieKey = "afterimage_high_score";
+const visitCountCookieKey = "afterimage_visit_count";
+const playCountCookieKey = "afterimage_play_count";
 
 // 画面要素
 const display = document.getElementById("display");
@@ -55,63 +49,39 @@ let revealTimer = null;
 let gameActive = false;
 let currentMode = "digits";
 let currentPool = charSets.digits;
-// 初期表示はローカル値、起動後に Supabase 値で上書き
-let highScore = Number(localStorage.getItem(localHighScoreKey) || 0);
-let startClickCount = Number(localStorage.getItem(localStartCountKey) || 0);
+let highScore = 0;
+let visitCount = 0;
+let startClickCount = 0;
+
+function getCookie(name) {
+  const cookies = document.cookie ? document.cookie.split("; ") : [];
+  const prefix = `${encodeURIComponent(name)}=`;
+  const found = cookies.find((row) => row.startsWith(prefix));
+  if (!found) return null;
+  return decodeURIComponent(found.slice(prefix.length));
+}
+
+function setCookie(name, value) {
+  document.cookie = `${encodeURIComponent(name)}=${encodeURIComponent(value)}; max-age=${cookieMaxAge}; path=/; SameSite=Lax`;
+}
+
+function getCookieNumber(name) {
+  return Number(getCookie(name) || 0);
+}
 
 function setHighScore(next) {
   highScore = next;
-  localStorage.setItem(localHighScoreKey, String(highScore));
+  setCookie(highScoreCookieKey, String(highScore));
 }
 
 function setStartClickCount(next) {
   startClickCount = next;
-  localStorage.setItem(localStartCountKey, String(startClickCount));
+  setCookie(playCountCookieKey, String(startClickCount));
 }
 
-async function loadRemoteStats() {
-  // 公開時にURL/Key未設定ならローカルのみで動かす
-  if (!supabaseClient) return;
-  const { data, error } = await supabaseClient.rpc("get_stats");
-  if (error) {
-    console.error("failed to load stats", error);
-    return;
-  }
-
-  const row = Array.isArray(data) ? data[0] : null;
-  if (!row) return;
-
-  setHighScore(Number(row.high_score || 0));
-  setStartClickCount(Number(row.start_click_count || 0));
-  updateStatus();
-}
-
-async function recordStartClick() {
-  // Startクリック回数を全体カウンタに反映
-  if (!supabaseClient) return;
-  const { data, error } = await supabaseClient.rpc("record_start");
-  if (error) {
-    console.error("failed to record start click", error);
-    return;
-  }
-
-  setStartClickCount(Number(data || 0));
-  updateStatus();
-}
-
-async function recordHighScore(nextScore) {
-  // DB側で max(high_score, nextScore) を更新
-  if (!supabaseClient) return;
-  const { data, error } = await supabaseClient.rpc("record_score", {
-    p_score: nextScore
-  });
-  if (error) {
-    console.error("failed to record score", error);
-    return;
-  }
-
-  setHighScore(Number(data || 0));
-  updateStatus();
+function incrementVisitCount() {
+  visitCount = getCookieNumber(visitCountCookieKey) + 1;
+  setCookie(visitCountCookieKey, String(visitCount));
 }
 
 function inImageMode() {
@@ -123,7 +93,7 @@ function applyModeClass() {
 }
 
 function updateStatus() {
-  statusEl.textContent = `ワールドハイスコア: ${highScore} | あなたのスコア: ${score} | 総プレイ回数: ${startClickCount}`;
+  statusEl.textContent = `あなたのベスト: ${highScore} | 今回のスコア: ${score} | アクセス回数: ${visitCount} | プレイ回数: ${startClickCount}`;
 }
 
 function tokenToString(tokens) {
@@ -213,8 +183,6 @@ function gameOver(selectedButton) {
   if (score > highScore) {
     setHighScore(score);
   }
-  // ゲーム終了時点のスコアをDBへ送る
-  recordHighScore(score);
 
   display.textContent = `ゲーム終了 (${answer})`;
   updateStatus();
@@ -283,18 +251,17 @@ function startGame() {
   score = 0;
   correctCount = 0;
   currentLength = 3;
-  // 先にローカル表示を更新し、非同期でDBにも反映
   setStartClickCount(startClickCount + 1);
   gameActive = true;
   locked = true;
   startBtn.textContent = "リスタート";
   updateStatus();
-  recordStartClick();
   nextRound();
 }
 
 startBtn.addEventListener("click", startGame);
+highScore = getCookieNumber(highScoreCookieKey);
+startClickCount = getCookieNumber(playCountCookieKey);
+incrementVisitCount();
 applyModeClass();
 updateStatus();
-// 初回表示後にDB値を取りにいく
-loadRemoteStats();
