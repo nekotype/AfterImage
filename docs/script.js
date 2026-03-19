@@ -27,7 +27,7 @@
 };
 
 const imageSeparator = "\u2009";
-const cookieMaxAge = 60 * 60 * 24 * 365;
+const cookieMaxAge = 60 * 60 * 24 * 30;
 const highScoreCookieKey = "afterimage_high_score";
 const visitCountCookieKey = "afterimage_visit_count";
 const playCountCookieKey = "afterimage_play_count";
